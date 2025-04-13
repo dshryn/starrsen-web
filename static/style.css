@@ -74,8 +74,13 @@ label {
     width: 100%;
 }
 
-matrix-display td {
+.matrix-display td {
     border: 1px solid #eee;
     padding: 5px;
     text-align: center;
+}
+
+#graph-display img {
+    max-width: 100%;
+    height: auto;
 }

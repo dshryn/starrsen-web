@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         table += '</table>';
         element.innerHTML = table;
-        element.dataset.matrix = JSON.stringify(matrix); // Store matrix data
+        element.dataset.matrix = JSON.stringify(matrix);
     }
 
     generateBtn.addEventListener('click', function() {

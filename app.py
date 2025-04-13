@@ -73,7 +73,9 @@ def multiply(A, B):
 def plot_memory_time(time_points, memory_points):
     steps = [
         "Before A", "After A",
-        "After B", "After Processing"
+        "Before B", "After B",
+        "Before Processing", "After Processing",
+        "Before Writing", "After Writing"
     ]
 
     plt.figure(figsize=(10, 6))
@@ -129,15 +131,31 @@ def multiply_and_plot():
         time_points.append(time.perf_counter() - start_time)
         memory_points.append(tracemalloc.get_traced_memory()[1] / 1024 / 1024)
 
+        # Step 3: Before B
+        time_points.append(time.perf_counter() - start_time)
+        memory_points.append(tracemalloc.get_traced_memory()[1] / 1024 / 1024)
+
         B = np.array(matrix_b)
 
-        # Step 3: After B
+        # Step 4: After B
+        time_points.append(time.perf_counter() - start_time)
+        memory_points.append(tracemalloc.get_traced_memory()[1] / 1024 / 1024)
+
+        # Step 5: Before Multiply
         time_points.append(time.perf_counter() - start_time)
         memory_points.append(tracemalloc.get_traced_memory()[1] / 1024 / 1024)
 
         result = multiply(A, B)
 
-        # Step 4: After Multiply
+        # Step 6: After Multiply
+        time_points.append(time.perf_counter() - start_time)
+        memory_points.append(tracemalloc.get_traced_memory()[1] / 1024 / 1024)
+
+        # Step 7: Before Return
+        time_points.append(time.perf_counter() - start_time)
+        memory_points.append(tracemalloc.get_traced_memory()[1] / 1024 / 1024)
+
+        # Step 8: After Return
         time_points.append(time.perf_counter() - start_time)
         memory_points.append(tracemalloc.get_traced_memory()[1] / 1024 / 1024)
 
