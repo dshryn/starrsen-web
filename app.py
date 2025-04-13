@@ -121,41 +121,33 @@ def multiply_and_plot():
 
         start_time = time.perf_counter()
 
-        # Step 1: Before A
         time_points.append(time.perf_counter() - start_time)
         memory_points.append(tracemalloc.get_traced_memory()[1] / 1024 / 1024)
 
         A = np.array(matrix_a)
 
-        # Step 2: After A
         time_points.append(time.perf_counter() - start_time)
         memory_points.append(tracemalloc.get_traced_memory()[1] / 1024 / 1024)
 
-        # Step 3: Before B
         time_points.append(time.perf_counter() - start_time)
         memory_points.append(tracemalloc.get_traced_memory()[1] / 1024 / 1024)
 
         B = np.array(matrix_b)
 
-        # Step 4: After B
         time_points.append(time.perf_counter() - start_time)
         memory_points.append(tracemalloc.get_traced_memory()[1] / 1024 / 1024)
 
-        # Step 5: Before Multiply
         time_points.append(time.perf_counter() - start_time)
         memory_points.append(tracemalloc.get_traced_memory()[1] / 1024 / 1024)
 
         result = multiply(A, B)
 
-        # Step 6: After Multiply
         time_points.append(time.perf_counter() - start_time)
         memory_points.append(tracemalloc.get_traced_memory()[1] / 1024 / 1024)
 
-        # Step 7: Before Return
         time_points.append(time.perf_counter() - start_time)
         memory_points.append(tracemalloc.get_traced_memory()[1] / 1024 / 1024)
 
-        # Step 8: After Return
         time_points.append(time.perf_counter() - start_time)
         memory_points.append(tracemalloc.get_traced_memory()[1] / 1024 / 1024)
 
