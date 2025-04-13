@@ -1,9 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
     const generateBtn = document.getElementById('generateBtn');
     const multiplyBtn = document.getElementById('multiplyBtn');
+    const graphBtn = document.getElementById('graphBtn');
     const matrixADisplay = document.getElementById('matrixA-display');
     const matrixBDisplay = document.getElementById('matrixB-display');
     const resultDisplay = document.getElementById('result-display');
+    const graphDisplay = document.getElementById('graph-display');
+    const graphImage = document.getElementById('graph-image');
 
     function displayMatrix(matrix, element) {
         let table = '<table>';
@@ -25,7 +28,8 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 displayMatrix(data.matrixA, matrixADisplay);
                 displayMatrix(data.matrixB, matrixBDisplay);
-                resultDisplay.innerHTML = ''; // Clear previous result
+                resultDisplay.innerHTML = '';
+                graphDisplay.style.display = 'none';
             });
     });
 
@@ -34,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const matrixAData = JSON.parse(matrixADisplay.dataset.matrix);
             const matrixBData = JSON.parse(matrixBDisplay.dataset.matrix);
 
-            fetch('/multiply', {
+            fetch('/multiply_and_plot', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -43,17 +47,55 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.json())
             .then(data => {
-                if (data.result) {
+                if (data.result && data.graph) {
                     displayMatrix(data.result, resultDisplay);
+                    graphImage.src = `data:image/png;base64,${data.graph}`;
+                    graphDisplay.style.display = 'block';
                 } else {
-                    resultDisplay.innerHTML = 'Error: ' + data.error;
+                    resultDisplay.innerHTML = 'Error: ' + (data.error || 'Failed to generate graph.');
+                    graphDisplay.style.display = 'none';
                 }
             })
             .catch(error => {
                 resultDisplay.innerHTML = 'Error: ' + error;
+                graphDisplay.style.display = 'none';
             });
         } catch (error) {
             resultDisplay.innerHTML = 'Error: Invalid matrix data. Please generate matrices first.';
+            graphDisplay.style.display = 'none';
+        }
+    });
+
+    graphBtn.addEventListener('click', function() {
+        try {
+            const matrixAData = JSON.parse(matrixADisplay.dataset.matrix);
+            const matrixBData = JSON.parse(matrixBDisplay.dataset.matrix);
+
+            fetch('/multiply_and_plot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ matrixA: matrixAData, matrixB: matrixBData }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.result && data.graph) {
+                    displayMatrix(data.result, resultDisplay);
+                    graphImage.src = `data:image/png;base64,${data.graph}`;
+                    graphDisplay.style.display = 'block';
+                } else {
+                    resultDisplay.innerHTML = 'Error: ' + (data.error || 'Failed to generate graph.');
+                    graphDisplay.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                resultDisplay.innerHTML = 'Error: ' + error;
+                graphDisplay.style.display = 'none';
+            });
+        } catch (error) {
+            resultDisplay.innerHTML = 'Error: Invalid matrix data. Please generate matrices first.';
+            graphDisplay.style.display = 'none';
         }
     });
 });

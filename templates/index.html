@@ -13,6 +13,7 @@
         <div class="controls">
             <button id="generateBtn">Generate 128x128 Matrices</button>
             <button id="multiplyBtn">Multiply Matrices</button>
+            <button id="graphBtn">Show Graph</button>
         </div>
 
         <div class="matrix-inputs">
@@ -29,6 +30,11 @@
         <div class="result">
             <label for="result">Result:</label>
             <div id="result-display" class="matrix-display" readonly></div>
+        </div>
+
+        <div id="graph-display" style="display: none;">
+            <label>Memory Usage Graph:</label>
+            <img id="graph-image" style="width: 100%;">
         </div>
     </div>
 

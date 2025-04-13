@@ -1,8 +1,12 @@
-# app.py
 from flask import Flask, render_template, request, jsonify
 import numpy as np
 import concurrent.futures
 import random
+import time
+import tracemalloc
+import io
+import base64
+import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 
@@ -66,6 +70,31 @@ def multiply(A, B):
 
     return C_pad[:m, :n].tolist()
 
+def plot_memory_time(time_points, memory_points):
+    steps = [
+        "Before A", "After A",
+        "After B", "After Processing"
+    ]
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(steps, memory_points, marker='o', color='red')
+    for i, (t, m) in enumerate(zip(time_points, memory_points)):
+        plt.text(i, m + 1, f"{m:.1f}MB\n{t:.4f}s", ha='center')
+
+    plt.xlabel("Step")
+    plt.ylabel("Memory Usage (MB)")
+    plt.title("Memory Usage Over Time (Strassen's Algorithm)")
+    plt.grid(True)
+    plt.tight_layout()
+
+    img = io.BytesIO()
+    plt.savefig(img, format='png')
+    img.seek(0)
+    img_b64 = base64.b64encode(img.getvalue()).decode()
+    plt.close()
+
+    return img_b64
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -77,15 +106,46 @@ def generate_matrices():
     matrix_b = [[random.randint(1, 10) for _ in range(size)] for _ in range(size)]
     return jsonify({'matrixA': matrix_a, 'matrixB': matrix_b})
 
-@app.route('/multiply', methods=['POST'])
-def multiply_matrices():
+@app.route('/multiply_and_plot', methods=['POST'])
+def multiply_and_plot():
     try:
         data = request.get_json()
         matrix_a = data['matrixA']
         matrix_b = data['matrixB']
 
-        result = multiply(matrix_a, matrix_b)
-        return jsonify({'result': result})
+        tracemalloc.start()
+        time_points = []
+        memory_points = []
+
+        start_time = time.perf_counter()
+
+        # Step 1: Before A
+        time_points.append(time.perf_counter() - start_time)
+        memory_points.append(tracemalloc.get_traced_memory()[1] / 1024 / 1024)
+
+        A = np.array(matrix_a)
+
+        # Step 2: After A
+        time_points.append(time.perf_counter() - start_time)
+        memory_points.append(tracemalloc.get_traced_memory()[1] / 1024 / 1024)
+
+        B = np.array(matrix_b)
+
+        # Step 3: After B
+        time_points.append(time.perf_counter() - start_time)
+        memory_points.append(tracemalloc.get_traced_memory()[1] / 1024 / 1024)
+
+        result = multiply(A, B)
+
+        # Step 4: After Multiply
+        time_points.append(time.perf_counter() - start_time)
+        memory_points.append(tracemalloc.get_traced_memory()[1] / 1024 / 1024)
+
+        tracemalloc.stop()
+
+        graph_image = plot_memory_time(time_points, memory_points)
+
+        return jsonify({'result': result, 'graph': graph_image})
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
