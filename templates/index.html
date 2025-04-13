@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Multiplication - Strassen's Algorithm</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Matrix Multiplication (Strassen's Algorithm)</h1>
+
+        <div class="controls">
+            <button id="generateBtn">Generate 128x128 Matrices</button>
+            <button id="multiplyBtn">Multiply Matrices</button>
+        </div>
+
+        <div class="matrix-inputs">
+            <div class="matrix-input">
+                <label for="matrixA">Matrix A:</label>
+                <div id="matrixA-display" class="matrix-display"></div>
+            </div>
+            <div class="matrix-input">
+                <label for="matrixB">Matrix B:</label>
+                <div id="matrixB-display" class="matrix-display"></div>
+            </div>
+        </div>
+
+        <div class="result">
+            <label for="result">Result:</label>
+            <div id="result-display" class="matrix-display" readonly></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
